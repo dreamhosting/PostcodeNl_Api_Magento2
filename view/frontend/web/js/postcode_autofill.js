@@ -23,7 +23,8 @@ define([
         enableDisableFieldsInt: ['[name^="street["][name$="]"]:not(:first)', "[name='city']", "[name='postcode']", "[name='region']"],
         nlPostcodeInputCloneFrom: 'div[name$=".postcode"]',
         nlPostcodeInputCloneInsertAfter: 'div[name$=".country_id"]',
-
+        nlHouseNumberInputCloneFrom: 'div[name$=".city"]',
+        nlHouseNumberInputCloneInsertAfter: 'div[name$=".country_id"]',
 
         initialize: function () {
 
@@ -170,12 +171,43 @@ define([
                 $(inputEl).on('focus', function() {
                     that.updateFocusForm(inputEl);
                 });
+                
+                
+                this.fieldsScope.find(this.nlHouseNumberInputCloneFrom)
+                    .clone()
+                    .removeAttr('data-bind')
+                    .prop('id', 'flekto_nl_house_'+currentTimestamp)
+                    .prop('name', 'flekto_nl_house_'+currentTimestamp)
+                    .removeClass('_error')
+                    .addClass('flekto_nl_house_')
+                    .insertAfter(this.fieldsScope.find(this.nlPostcodeInputCloneInsertAfter));
+    
+                this.fieldsScope.find('.flekto_nl_house_').find('.warning').remove();
+                this.fieldsScope.find('.flekto_nl_house_').find('.field-error').remove();
+                this.fieldsScope.find('.flekto_nl_house_').find('span').text(this.getTranslations().flekto_nl_house_label);
+    
+                var inputEl = this.fieldsScope.find('#flekto_nl_house_'+currentTimestamp)
+                    .find('input')
+                    .attr('id', 'flekto_nl_house_input_'+currentTimestamp)
+                    .attr('name', 'flekto_nl_house_input')
+                    .attr('placeholder', this.getTranslations().flekto_nl_house_placeholder)
+                    .removeAttr('data-bind')
+                    .prop('disabled', false)
+                    .addClass('flekto_nl_house_input')
+                    .val('');
+    
+                $(inputEl).on('keyup', {scope: this}, this.delayGetNlPostcodeAddress);
+                $(inputEl).on('blur', {scope: this}, this.getNlPostcodeAddress);
+                $(inputEl).on('focus', function() {
+                    that.updateFocusForm(inputEl);
+                });
             }
         },
 
 
         disableNlPostcodeWatcher: function() {
             this.fieldsScope.find('.flekto_nl_zip').remove();
+            this.fieldsScope.find('.flekto_nl_house').remove();
             this.logDebug('disableNlPostcodeWatcher');
 
             this.enableDisableFields('show');
@@ -203,7 +235,7 @@ define([
 
             var input = jQuery(event.target);
             var addressContainer = that.fieldsScope;
-            var query = input.val();
+            /*var query = input.val();
             var regex = /([1-9][0-9]{3}\s?[a-z]{2})\s?(\d+.*)/i;
             var addressData = query.match(regex);
 
@@ -215,12 +247,16 @@ define([
                     input.after('<span class="postcodenl-address-autocomplete-warning">' + that.getTranslations().flekto_nl_zip_warning + '</span>');
                 }
                 return;
-            }
+            }*/
 
             input.addClass('postcodenl-address-autocomplete-loading');
 
-            var postcode = addressData[1];
-            var houseNumber = addressData[2];
+            //var postcode = addressData[1];
+            //var houseNumber = addressData[2];
+            
+            var postcode = $("input[name=flekto_nl_zip_input]").val();
+            var houseNumber = $("input[name=flekto_nl_house_input]").val();
+            
             jQuery.get(that.getSettings().base_url+'rest/V1/flekto/postcode-international/nlzipcode/' + postcode + '/' + houseNumber, function(response) {
 
                 response = response[0];
