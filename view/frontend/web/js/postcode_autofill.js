@@ -458,7 +458,7 @@ define([
             if (this.getSettings().show_hide_address_fields != 'show') {
 
                 var fields = this.enableDisableFieldsInt;
-                if (this.fieldsScope.find('.flekto_nl_zip').length || endis == 'show') {
+                if ((this.fieldsScope.find('.flekto_nl_zip').length && this.fieldsScope.find('.flekto_nl_house').length) || endis == 'show') {
                     fields = this.enableDisableFieldsNl;
                 }
 
@@ -483,7 +483,7 @@ define([
                         } else {
 
                             $(that.fieldsScope).find(selector).closest("div.field").hide();
-                            if (that.fieldsScope.find('.flekto_nl_zip').length) {
+                            if (that.fieldsScope.find('.flekto_nl_zip').length || that.fieldsScope.find('.flekto_nl_house').length) {
                                 $(that.fieldsScope).find(selector).closest("fieldset.field").hide();
                             }
                         }
