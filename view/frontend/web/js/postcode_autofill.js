@@ -23,8 +23,8 @@ define([
         enableDisableFieldsInt: ['[name^="street["][name$="]"]:not(:first)', "[name='city']", "[name='postcode']", "[name='region']"],
         nlPostcodeInputCloneFrom: 'div[name$=".postcode"]',
         nlPostcodeInputCloneInsertAfter: 'div[name$=".country_id"]',
-        nlHouseNumberInputCloneFrom: 'div[name$=".city"]',
-        nlHouseNumberInputCloneInsertAfter: 'div[name$=".country_id"]',
+        nlHouseNumberInputCloneFrom: 'div[name$=".street[1]"]',
+        nlHouseNumberInputCloneInsertAfter: 'div[name$=".flekto_nl_zip_input"]',
 
         initialize: function () {
 
