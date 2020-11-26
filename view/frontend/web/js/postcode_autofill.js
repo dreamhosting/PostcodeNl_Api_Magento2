@@ -234,6 +234,7 @@ define([
             that.logDebug('getNlPostcodeAddress', event);
 
             var input = jQuery(event.target);
+            
             var addressContainer = that.fieldsScope;
             var query = input.val();
             var regexPC = /([1-9][0-9]{3}\s?[a-z]{2})/i;
@@ -242,26 +243,40 @@ define([
             var postcode = $("input[name=flekto_nl_zip_input]").val();
             var houseNumber = $("input[name=flekto_nl_house_input]").val();
             
+            var elementPC = $("input[name=flekto_nl_zip_input]");
+            var elementHN = $("input[name=flekto_nl_house_input]");
+            
             var addressDataPC = postcode.match(regexPC);
             var addressDataHN = houseNumber.match(regexHN);
 
-            if (!addressDataPC || addressDataPC.length < 2) {
-
-                // No postcode and house number found
-                if (query.length > 7 || !input.is(':focus')) {
-                    $(addressContainer).find('.postcodenl-address-autocomplete-warning').remove();
-                    input.after('<span class="postcodenl-address-autocomplete-warning">' + that.getTranslations().flekto_nl_zip_warning + '</span>');
+            if(input[0].name == 'flekto_nl_zip_input'){
+                if (!addressDataPC || addressDataPC.length < 2) {
+                    // No postcode and house number found
+                    if (postcode.length > 7 || !input.is(':focus')) {
+                        $(addressContainer).find('.postcodenl-address-autocomplete-warning').remove();
+                        input.after('<span class="postcodenl-address-autocomplete-warning">' + that.getTranslations().flekto_nl_zip_warning + '</span>');
+                    }
+                    return;
                 }
+            }
+            
+            if(input[0].name == 'flekto_nl_house_input'){
+                if (!addressDataHN || addressDataHN.length < 2) {
+                    // No postcode and house number found
+                    if (houseNumber.length > 0 || !input.is(':focus')) {
+                        $(addressContainer).find('.postcodenl-address-autocomplete-warning').remove();
+                        input.after('<span class="postcodenl-address-autocomplete-warning">' + that.getTranslations().flekto_nl_house_warning + '</span>');
+                    }
+                    return;
+                }
+            }
+
+            if(!addressDataPC || !addressDataHN){
                 return;
             }
 
             input.addClass('postcodenl-address-autocomplete-loading');
 
-            //var postcode = addressData[1];
-            //var houseNumber = addressData[2];
-            
-            
-            
             jQuery.get(that.getSettings().base_url+'rest/V1/flekto/postcode-international/nlzipcode/' + postcode + '/' + houseNumber, function(response) {
 
                 response = response[0];
@@ -313,7 +328,6 @@ define([
                              }
                         );
                     });
-
                 } else {
                     $(that.fieldsScope).find('.flekt_nl_zip_houseNumberAdditions').remove();
                 }
@@ -321,12 +335,9 @@ define([
                 that.enableDisableFields('show');
 
             }).always(function() {
-
                 input.removeClass('postcodenl-address-autocomplete-loading');
                 that.enableDisableFields('show');
-
             });
-
         },
 
 
@@ -366,7 +377,6 @@ define([
                         context: $(that.currentCountryElement).children('option:selected').val()
                     });
 
-
                     $(this).get(0).addEventListener('autocomplete-select', function (e) {
 
                         if (e.detail.precision === 'Address') {
@@ -386,9 +396,7 @@ define([
                             that.enableDisableFields('show');
                         }
                     });
-
                 } else {
-
                     if (that.autocomplete.options.context != $(that.currentCountryElement).children('option:selected').val().toLowerCase()) {
                         that.autocomplete.setCountry($(that.currentCountryElement).children('option:selected').val());
                     }
@@ -475,28 +483,20 @@ define([
 
                 var that = this;
                 jQuery.each(fields, function(index, selector) {
-
                     if (that.getSettings().show_hide_address_fields == 'disable') {
                         $(that.fieldsScope).find(selector).prop("disabled", ((endis == 'show') ? false : true));
-
                     } else if (that.getSettings().show_hide_address_fields == 'hide') {
-
                         if (endis == 'show') {
                             $(that.fieldsScope).find(selector).closest("div.field").show();
                             $(that.fieldsScope).find(selector).closest("fieldset.field").show();
-
                         } else {
-
                             $(that.fieldsScope).find(selector).closest("div.field").hide();
                             if (that.fieldsScope.find('.flekto_nl_zip').length) {
                                 $(that.fieldsScope).find(selector).closest("fieldset.field").hide();
                             }
                         }
                     }
-
-
                 });
-
             }
         },
 
@@ -517,7 +517,5 @@ define([
                 console.log(...params);
             }
         }
-
     });
-
 });
