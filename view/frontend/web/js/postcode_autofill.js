@@ -237,17 +237,21 @@ define([
             
             var addressContainer = that.fieldsScope;
             var query = input.val();
+            
             var regexPC = /([1-9][0-9]{3}\s?[a-z]{2})/i;
             var regexHN = /(\d+.*)/i;
-            
-            var postcode = $("input[name=flekto_nl_zip_input]").val();
-            var houseNumber = $("input[name=flekto_nl_house_input]").val();
-            
+            var regexTime = /\d+/i;
+                        
             var elementPC = $("input[name=flekto_nl_zip_input]");
             var elementHN = $("input[name=flekto_nl_house_input]");
             
             var addressDataPC = postcode.match(regexPC);
             var addressDataHN = houseNumber.match(regexHN);
+            
+            var time = input.context.id.match(regexTime);
+            
+            var postcode = $("input[id=flekto_nl_zip_input_"+ time +"]").val();
+            var houseNumber = $("input[id=flekto_nl_house_input_"+ time +"]").val();  
 
             if(input[0].name == 'flekto_nl_zip_input'){
                 if (!addressDataPC || addressDataPC.length < 2) {
