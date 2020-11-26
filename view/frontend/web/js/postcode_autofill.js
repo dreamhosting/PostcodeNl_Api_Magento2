@@ -143,36 +143,6 @@ define([
                 var that = this;
                 var lookupTimeout = 0;
 
-                this.fieldsScope.find(this.nlPostcodeInputCloneFrom)
-                    .clone()
-                    .removeAttr('data-bind')
-                    .prop('id', 'flekto_nl_zip_'+currentTimestamp)
-                    .prop('name', 'flekto_nl_zip_'+currentTimestamp)
-                    .removeClass('_error')
-                    .addClass('flekto_nl_zip')
-                    .insertAfter(this.fieldsScope.find(this.nlPostcodeInputCloneInsertAfter));
-
-                this.fieldsScope.find('.flekto_nl_zip').find('.warning').remove();
-                this.fieldsScope.find('.flekto_nl_zip').find('.field-error').remove();
-                this.fieldsScope.find('.flekto_nl_zip').find('span').text(this.getTranslations().flekto_nl_zip_label);
-
-                var inputEl = this.fieldsScope.find('#flekto_nl_zip_'+currentTimestamp)
-                    .find('input')
-                    .attr('id', 'flekto_nl_zip_input_'+currentTimestamp)
-                    .attr('name', 'flekto_nl_zip_input')
-                    .attr('placeholder', this.getTranslations().flekto_nl_zip_placeholder)
-                    .removeAttr('data-bind')
-                    .prop('disabled', false)
-                    .addClass('flekto_nl_zip_input')
-                    .val('');
-
-                $(inputEl).on('keyup', {scope: this}, this.delayGetNlPostcodeAddress);
-                $(inputEl).on('blur', {scope: this}, this.getNlPostcodeAddress);
-                $(inputEl).on('focus', function() {
-                    that.updateFocusForm(inputEl);
-                });
-                
-                
                 this.fieldsScope.find(this.nlHouseNumberInputCloneFrom)
                     .clone()
                     .removeAttr('data-bind')
@@ -200,6 +170,36 @@ define([
                 $(inputElHouse).on('blur', {scope: this}, this.getNlPostcodeAddress);
                 $(inputElHouse).on('focus', function() {
                     that.updateFocusForm(inputElHouse);
+                });
+
+
+                this.fieldsScope.find(this.nlPostcodeInputCloneFrom)
+                    .clone()
+                    .removeAttr('data-bind')
+                    .prop('id', 'flekto_nl_zip_'+currentTimestamp)
+                    .prop('name', 'flekto_nl_zip_'+currentTimestamp)
+                    .removeClass('_error')
+                    .addClass('flekto_nl_zip')
+                    .insertAfter(this.fieldsScope.find(this.nlPostcodeInputCloneInsertAfter));
+
+                this.fieldsScope.find('.flekto_nl_zip').find('.warning').remove();
+                this.fieldsScope.find('.flekto_nl_zip').find('.field-error').remove();
+                this.fieldsScope.find('.flekto_nl_zip').find('span').text(this.getTranslations().flekto_nl_zip_label);
+
+                var inputEl = this.fieldsScope.find('#flekto_nl_zip_'+currentTimestamp)
+                    .find('input')
+                    .attr('id', 'flekto_nl_zip_input_'+currentTimestamp)
+                    .attr('name', 'flekto_nl_zip_input')
+                    .attr('placeholder', this.getTranslations().flekto_nl_zip_placeholder)
+                    .removeAttr('data-bind')
+                    .prop('disabled', false)
+                    .addClass('flekto_nl_zip_input')
+                    .val('');
+
+                $(inputEl).on('keyup', {scope: this}, this.delayGetNlPostcodeAddress);
+                $(inputEl).on('blur', {scope: this}, this.getNlPostcodeAddress);
+                $(inputEl).on('focus', function() {
+                    that.updateFocusForm(inputEl);
                 });
             }
         },
@@ -238,20 +238,16 @@ define([
             var addressContainer = that.fieldsScope;
             var query = input.val();
             
-            var regexPC = /([1-9][0-9]{3}\s?[a-z]{2})/i;
-            var regexHN = /(\d+.*)/i;
-            var regexTime = /\d+/i;
-                        
-            var elementPC = $("input[name=flekto_nl_zip_input]");
-            var elementHN = $("input[name=flekto_nl_house_input]");
+            var regexPostCode = /([1-9][0-9]{3}\s?[a-z]{2})/i;
+            var regexHouseNumber = /(\d+.*)/i;
+            var regexGroupSelector = /\d+/i;
             
-            var addressDataPC = postcode.match(regexPC);
-            var addressDataHN = houseNumber.match(regexHN);
+            var groupSelector = input.context.id.match(regexGroupSelector);
+            var postcode = $("input[id=flekto_nl_zip_input_"+ groupSelector +"]").val();
+            var houseNumber = $("input[id=flekto_nl_house_input_"+ groupSelector +"]").val();  
             
-            var time = input.context.id.match(regexTime);
-            
-            var postcode = $("input[id=flekto_nl_zip_input_"+ time +"]").val();
-            var houseNumber = $("input[id=flekto_nl_house_input_"+ time +"]").val();  
+            var addressDataPC = postcode.match(regexPostCode);
+            var addressDataHN = houseNumber.match(regexHouseNumber);
 
             if(input[0].name == 'flekto_nl_zip_input'){
                 if (!addressDataPC || addressDataPC.length < 2) {
