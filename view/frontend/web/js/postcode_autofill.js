@@ -22,9 +22,9 @@ define([
         enableDisableFieldsNl: ['[name^="street["][name$="]"]', "[name='city']", "[name='postcode']", "[name='region']"],
         enableDisableFieldsInt: ['[name^="street["][name$="]"]:not(:first)', "[name='city']", "[name='postcode']", "[name='region']"],
         nlPostcodeInputCloneFrom: 'div[name$=".postcode"]',
-        nlPostcodeInputCloneInsertAfter: 'div[name$=".country_id"]',
+        nlPostcodeInputCloneInsertAfter: 'div[name$=".lastname"]',
         nlHouseNumberInputCloneFrom: 'div[name$=".city"]',
-        nlHouseNumberInputCloneInsertAfter: 'div[name$=".country_id"]',
+        nlHouseNumberInputCloneInsertAfter: 'div[name$=".lastname"]',
 
         initialize: function () {
 
